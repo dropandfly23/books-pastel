@@ -1,0 +1,7 @@
+---
+- name: Setup machine for Pastel
+  hosts: master
+  user: ansible
+
+  roles:
+    - pastel

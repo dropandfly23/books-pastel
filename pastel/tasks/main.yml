@@ -1,0 +1,35 @@
+---
+- name: Re-create a Pastel server container
+  docker_container:
+    name: pastel-server
+    image: registry.forge.orange-labs.fr/indigo/tools/pastel:latest
+    state: started
+    recreate: yes
+    restart_policy: always
+    published_ports:
+      - 8080:8080
+    env:
+      PASTEL_GITLAB_APP_ID: 1e721f5fd4f5d6a218ce38f9d90b14d946b50405337df73d2f81411cd3f0d49a
+      PASTEL_GITLAB_SECRET: a746e214407ef58993ca177ef7a688d39c3bf73365ce9ed1273bb5075845acb5
+      PASTEL_SERVER_URI: http://lx01777l.tb.uro.equant.com:8080
+      PASTEL_SERVER_ENV_LIST: 0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t
+    log_driver: json-file 
+    pull: true
+    
+- name: Re-create a Pastel tasks container for merge requests
+  docker_container:
+    name: pastel-tasks-merge-requests
+    image: registry.forge.orange-labs.fr/indigo/tools/pastel:latest
+    state: started
+    recreate: yes
+    restart_policy: always
+    command: tasks merge-requests
+    env:
+      PASTEL_TASKS_CRON: true        
+      PASTEL_TASKS_PERIOD: "@daily"
+      PASTEL_GITLAB_KEY: 7efh7aDDepxy5HzFwdYg #dbvpn_team access token
+      PASTEL_GITLAB_PROJECT_ID: 1278
+      PASTEL_TASKS_BRANCHES_TO_EXCLUDE: cycle-long,cycle-court,uat
+      PASTEL_MATTERMOST_WEBHOOK_URI: https://mattermost.forge.orange-labs.fr/hooks/y5xkiakmy38ptrrxhk9fqumpfh
+    log_driver: json-file
+    pull: true
